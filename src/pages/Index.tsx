@@ -1,232 +1,194 @@
 import { useState } from "react";
-import { useForm } from "react-hook-form";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
-import { AlertTriangle, CheckCircle } from "lucide-react";
+import { AlertTriangle, CheckCircle, Send } from "lucide-react";
 
-interface EpoxyMixForm {
-  employee: string;
-  partA: string;
-  partB: string;
-  ratio: string;
-  checkType: "startup" | "shutdown" | "daily";
-  notes: string;
-}
+type CheckType = "startup" | "shutdown" | "daily";
 
 const Index = () => {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [employee, setEmployee] = useState("");
+  const [partA, setPartA] = useState("");
+  const [partB, setPartB] = useState("");
+  const [checkType, setCheckType] = useState<CheckType>("daily");
   const [ratioStatus, setRatioStatus] = useState<"ok" | "out-of-range" | null>(null);
-  
-  const { register, handleSubmit, watch, reset, setValue } = useForm<EpoxyMixForm>({
-    defaultValues: {
-      employee: "",
-      partA: "",
-      partB: "",
-      ratio: "",
-      checkType: "daily",
-      notes: "",
-    },
-  });
+  const [ratio, setRatio] = useState("");
 
-  const partA = watch("partA");
-  const partB = watch("partB");
-
-  const calculateRatio = () => {
-    const a = parseFloat(partA);
-    const b = parseFloat(partB);
+  const calculateRatio = (a: string, b: string) => {
+    const aNum = parseFloat(a);
+    const bNum = parseFloat(b);
     
-    if (!isNaN(a) && !isNaN(b) && b !== 0) {
-      const ratio = (a / b).toFixed(2);
-      setValue("ratio", ratio);
-      
-      const ratioValue = a / b;
-      if (ratioValue >= 2 && ratioValue <= 4) {
-        setRatioStatus("ok");
-      } else {
-        setRatioStatus("out-of-range");
-      }
+    if (!isNaN(aNum) && !isNaN(bNum) && bNum !== 0) {
+      const r = (aNum / bNum).toFixed(2);
+      setRatio(r);
+      const ratioValue = aNum / bNum;
+      setRatioStatus(ratioValue >= 2 && ratioValue <= 4 ? "ok" : "out-of-range");
     } else {
-      setValue("ratio", "");
+      setRatio("");
       setRatioStatus(null);
     }
   };
 
-  const onSubmit = async (data: EpoxyMixForm) => {
+  const handlePartAChange = (value: string) => {
+    setPartA(value);
+    calculateRatio(value, partB);
+  };
+
+  const handlePartBChange = (value: string) => {
+    setPartB(value);
+    calculateRatio(partA, value);
+  };
+
+  const handleSubmit = async () => {
+    if (!employee) {
+      toast({ title: "Enter Employee ID", variant: "destructive" });
+      return;
+    }
+    
     setIsSubmitting(true);
     
     try {
-      const uuid = crypto.randomUUID();
-      const timestamp = new Date().toISOString();
-      
       const { error } = await supabase.from("EpoxyMix").insert({
-        UUID: uuid,
-        Timestamp: timestamp,
-        Employee: parseInt(data.employee) || null,
-        "Part A": data.partA,
-        "Part B": data.partB,
-        Ratio: data.ratio,
-        "Daily Check": data.checkType === "daily" ? data.notes : null,
-        Startup: data.checkType === "startup" ? data.notes : null,
-        Shutdown: data.checkType === "shutdown" ? data.notes : null,
+        UUID: crypto.randomUUID(),
+        Timestamp: new Date().toISOString(),
+        Employee: parseInt(employee) || null,
+        "Part A": partA,
+        "Part B": partB,
+        Ratio: ratio,
+        "Daily Check": checkType === "daily" ? "Yes" : null,
+        Startup: checkType === "startup" ? "Yes" : null,
+        Shutdown: checkType === "shutdown" ? "Yes" : null,
       });
 
       if (error) throw error;
 
-      toast({
-        title: "Success",
-        description: "Epoxy mix record saved successfully",
-      });
+      toast({ title: "✓ Saved!", description: "Record submitted successfully" });
       
-      reset();
+      // Reset form
+      setEmployee("");
+      setPartA("");
+      setPartB("");
+      setRatio("");
       setRatioStatus(null);
+      setCheckType("daily");
     } catch (error) {
-      console.error("Error saving record:", error);
-      toast({
-        title: "Error",
-        description: "Failed to save record. Please try again.",
-        variant: "destructive",
-      });
+      console.error("Error:", error);
+      toast({ title: "Error", description: "Failed to save", variant: "destructive" });
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-zinc-900 p-4 md:p-8">
-      <div className="mx-auto max-w-2xl">
-        <div className="mb-8 border-l-4 border-amber-500 bg-zinc-800 p-4">
+    <div className="min-h-screen bg-zinc-900 p-4">
+      <div className="mx-auto max-w-xl space-y-6">
+        {/* Header */}
+        <div className="border-l-4 border-amber-500 bg-zinc-800 p-4">
           <h1 className="text-2xl font-bold uppercase tracking-wider text-amber-500">
-            Epoxy Mix Tracking
+            Epoxy Mix Log
           </h1>
-          <p className="mt-1 text-sm text-zinc-400">Production Quality Control</p>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        {/* Employee ID */}
+        <div className="space-y-2">
+          <label className="text-lg font-medium text-zinc-300">Employee ID</label>
+          <Input
+            type="number"
+            inputMode="numeric"
+            placeholder="Enter ID"
+            value={employee}
+            onChange={(e) => setEmployee(e.target.value)}
+            className="h-16 border-zinc-600 bg-zinc-800 text-2xl text-zinc-100 placeholder:text-zinc-500"
+          />
+        </div>
+
+        {/* Part A & Part B */}
+        <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="employee" className="text-sm font-medium uppercase tracking-wide text-zinc-300">
-              Employee ID
-            </Label>
+            <label className="text-lg font-medium text-zinc-300">Part A</label>
             <Input
-              id="employee"
               type="number"
-              placeholder="Enter employee ID"
-              className="border-zinc-700 bg-zinc-800 text-zinc-100 placeholder:text-zinc-500 focus:border-amber-500 focus:ring-amber-500"
-              {...register("employee", { required: true })}
+              inputMode="decimal"
+              placeholder="0"
+              value={partA}
+              onChange={(e) => handlePartAChange(e.target.value)}
+              className="h-16 border-zinc-600 bg-zinc-800 text-2xl text-zinc-100 placeholder:text-zinc-500"
             />
           </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="partA" className="text-sm font-medium uppercase tracking-wide text-zinc-300">
-                Part A (Resin)
-              </Label>
-              <Input
-                id="partA"
-                type="text"
-                placeholder="Amount"
-                className="border-zinc-700 bg-zinc-800 text-zinc-100 placeholder:text-zinc-500 focus:border-amber-500 focus:ring-amber-500"
-                {...register("partA")}
-                onBlur={calculateRatio}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="partB" className="text-sm font-medium uppercase tracking-wide text-zinc-300">
-                Part B (Hardener)
-              </Label>
-              <Input
-                id="partB"
-                type="text"
-                placeholder="Amount"
-                className="border-zinc-700 bg-zinc-800 text-zinc-100 placeholder:text-zinc-500 focus:border-amber-500 focus:ring-amber-500"
-                {...register("partB")}
-                onBlur={calculateRatio}
-              />
-            </div>
-          </div>
-
           <div className="space-y-2">
-            <Label className="text-sm font-medium uppercase tracking-wide text-zinc-300">
-              Calculated Ratio
-            </Label>
-            <div className={`flex items-center gap-3 rounded-md border p-3 ${
-              ratioStatus === "out-of-range" 
-                ? "border-red-500 bg-red-950/50" 
-                : ratioStatus === "ok"
-                ? "border-green-500 bg-green-950/50"
-                : "border-zinc-700 bg-zinc-800"
-            }`}>
-              <Input
-                type="text"
-                readOnly
-                placeholder="--"
-                className="border-0 bg-transparent text-xl font-mono text-zinc-100 focus:ring-0"
-                {...register("ratio")}
-              />
-              {ratioStatus === "out-of-range" && (
-                <div className="flex items-center gap-2 text-red-500">
-                  <AlertTriangle className="h-5 w-5" />
-                  <span className="text-sm font-bold uppercase">Out of Range</span>
-                </div>
-              )}
-              {ratioStatus === "ok" && (
-                <div className="flex items-center gap-2 text-green-500">
-                  <CheckCircle className="h-5 w-5" />
-                  <span className="text-sm font-bold uppercase">OK</span>
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div className="space-y-3">
-            <Label className="text-sm font-medium uppercase tracking-wide text-zinc-300">
-              Check Type
-            </Label>
-            <RadioGroup
-              defaultValue="daily"
-              onValueChange={(value) => setValue("checkType", value as "startup" | "shutdown" | "daily")}
-              className="flex gap-4"
-            >
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="startup" id="startup" className="border-zinc-500 text-amber-500" />
-                <Label htmlFor="startup" className="cursor-pointer text-zinc-300">Startup</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="shutdown" id="shutdown" className="border-zinc-500 text-amber-500" />
-                <Label htmlFor="shutdown" className="cursor-pointer text-zinc-300">Shutdown</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="daily" id="daily" className="border-zinc-500 text-amber-500" />
-                <Label htmlFor="daily" className="cursor-pointer text-zinc-300">Daily Check</Label>
-              </div>
-            </RadioGroup>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="notes" className="text-sm font-medium uppercase tracking-wide text-zinc-300">
-              Notes
-            </Label>
-            <Textarea
-              id="notes"
-              placeholder="Enter any observations or notes..."
-              className="min-h-[100px] border-zinc-700 bg-zinc-800 text-zinc-100 placeholder:text-zinc-500 focus:border-amber-500 focus:ring-amber-500"
-              {...register("notes")}
+            <label className="text-lg font-medium text-zinc-300">Part B</label>
+            <Input
+              type="number"
+              inputMode="decimal"
+              placeholder="0"
+              value={partB}
+              onChange={(e) => handlePartBChange(e.target.value)}
+              className="h-16 border-zinc-600 bg-zinc-800 text-2xl text-zinc-100 placeholder:text-zinc-500"
             />
           </div>
+        </div>
 
-          <Button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full bg-amber-500 py-6 text-lg font-bold uppercase tracking-wider text-zinc-900 hover:bg-amber-400 disabled:opacity-50"
-          >
-            {isSubmitting ? "Saving..." : "Submit Record"}
-          </Button>
-        </form>
+        {/* Ratio Display */}
+        {ratio && (
+          <div className={`flex items-center justify-between rounded-lg border-2 p-4 ${
+            ratioStatus === "out-of-range" 
+              ? "border-red-500 bg-red-950/50" 
+              : "border-green-500 bg-green-950/50"
+          }`}>
+            <span className="text-3xl font-mono font-bold text-zinc-100">
+              Ratio: {ratio}:1
+            </span>
+            {ratioStatus === "out-of-range" ? (
+              <div className="flex items-center gap-2 text-red-500">
+                <AlertTriangle className="h-8 w-8" />
+                <span className="text-lg font-bold">OUT OF RANGE</span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2 text-green-500">
+                <CheckCircle className="h-8 w-8" />
+                <span className="text-lg font-bold">OK</span>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Check Type Buttons */}
+        <div className="space-y-2">
+          <label className="text-lg font-medium text-zinc-300">Check Type</label>
+          <div className="grid grid-cols-3 gap-3">
+            {(["startup", "daily", "shutdown"] as CheckType[]).map((type) => (
+              <Button
+                key={type}
+                type="button"
+                onClick={() => setCheckType(type)}
+                className={`h-16 text-lg font-bold uppercase ${
+                  checkType === type
+                    ? "bg-amber-500 text-zinc-900 hover:bg-amber-400"
+                    : "bg-zinc-700 text-zinc-300 hover:bg-zinc-600"
+                }`}
+              >
+                {type}
+              </Button>
+            ))}
+          </div>
+        </div>
+
+        {/* Submit Button */}
+        <Button
+          onClick={handleSubmit}
+          disabled={isSubmitting}
+          className="h-20 w-full bg-green-600 text-2xl font-bold uppercase tracking-wider text-white hover:bg-green-500 disabled:opacity-50"
+        >
+          {isSubmitting ? "Saving..." : (
+            <>
+              <Send className="mr-3 h-6 w-6" />
+              Submit
+            </>
+          )}
+        </Button>
       </div>
     </div>
   );
