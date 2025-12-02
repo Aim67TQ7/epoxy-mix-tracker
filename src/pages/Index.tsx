@@ -6,7 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { AlertTriangle, CheckCircle, Send, RotateCcw, History } from "lucide-react";
 import { HistoryModal } from "@/components/HistoryModal";
 
-type CheckType = "startup" | "shutdown" | "daily";
+type CheckType = "startup" | "shutdown" | "daily" | null;
 
 const Index = () => {
   const { toast } = useToast();
@@ -14,7 +14,7 @@ const Index = () => {
   const [employee, setEmployee] = useState("");
   const [partA, setPartA] = useState("");
   const [partB, setPartB] = useState("");
-  const [checkType, setCheckType] = useState<CheckType>("daily");
+  const [checkType, setCheckType] = useState<CheckType>(null);
   
   // Result state - only shown after submit
   const [showResult, setShowResult] = useState(false);
@@ -26,7 +26,7 @@ const Index = () => {
     setEmployee("");
     setPartA("");
     setPartB("");
-    setCheckType("daily");
+    setCheckType(null);
     setShowResult(false);
     setResultRatio(null);
     setIsAcceptable(false);
@@ -40,6 +40,12 @@ const Index = () => {
     // Employee ID is required and must be 2-4 digits
     if (!isValidEmployeeId(employee)) {
       toast({ title: "Invalid Employee ID", description: "Must be 2-4 digits", variant: "destructive" });
+      return;
+    }
+
+    // Check Type is required
+    if (!checkType) {
+      toast({ title: "Check Type Required", description: "Please select Startup, Daily, or Shutdown", variant: "destructive" });
       return;
     }
     
@@ -170,7 +176,7 @@ const Index = () => {
             placeholder="2-4 digits"
             value={employee}
             onChange={(e) => setEmployee(e.target.value.replace(/\D/g, "").slice(0, 4))}
-            className="h-20 border-zinc-600 bg-zinc-800 text-4xl font-bold text-zinc-100 placeholder:text-zinc-500"
+            className="h-24 border-zinc-600 bg-zinc-800 text-5xl font-bold text-zinc-100 placeholder:text-zinc-500 placeholder:text-3xl"
           />
         </div>
 
@@ -178,7 +184,7 @@ const Index = () => {
         <div className="space-y-2">
           <label className="text-lg font-medium text-zinc-300">Check Type</label>
           <div className="grid grid-cols-3 gap-3">
-            {(["startup", "daily", "shutdown"] as CheckType[]).map((type) => (
+            {(["startup", "daily", "shutdown"] as const).map((type) => (
               <Button
                 key={type}
                 type="button"
@@ -205,7 +211,7 @@ const Index = () => {
               placeholder="0"
               value={partA}
               onChange={(e) => setPartA(e.target.value)}
-              className="h-20 border-zinc-600 bg-zinc-800 text-4xl font-bold text-zinc-100 placeholder:text-zinc-500"
+              className="h-24 border-zinc-600 bg-zinc-800 text-5xl font-bold text-zinc-100 placeholder:text-zinc-500 placeholder:text-3xl"
             />
           </div>
           <div className="space-y-2">
@@ -216,7 +222,7 @@ const Index = () => {
               placeholder="0"
               value={partB}
               onChange={(e) => setPartB(e.target.value)}
-              className="h-20 border-zinc-600 bg-zinc-800 text-4xl font-bold text-zinc-100 placeholder:text-zinc-500"
+              className="h-24 border-zinc-600 bg-zinc-800 text-5xl font-bold text-zinc-100 placeholder:text-zinc-500 placeholder:text-3xl"
             />
           </div>
         </div>
