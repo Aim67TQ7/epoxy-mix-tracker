@@ -46,9 +46,10 @@ const Index = () => {
       return;
     }
 
-    // Check Type is required
-    if (!checkType) {
-      toast({ title: "Check Type Required", description: "Please select Startup, Daily, or Shutdown", variant: "destructive" });
+    // Check Type is required only if no ratio (Part A and Part B are empty)
+    const hasRatio = partA && partB && parseFloat(partB) !== 0;
+    if (!checkType && !hasRatio) {
+      toast({ title: "Check Type Required", description: "Please select Startup, Daily, or Shutdown when no ratio is entered", variant: "destructive" });
       return;
     }
     
@@ -180,13 +181,13 @@ const Index = () => {
             placeholder="2-4 digits"
             value={employee}
             onChange={(e) => setEmployee(e.target.value.replace(/\D/g, "").slice(0, 4))}
-            className="h-24 border-zinc-600 bg-zinc-800 text-5xl font-bold text-zinc-100 placeholder:text-zinc-500 placeholder:text-3xl"
+            className="h-24 border-2 border-zinc-500 bg-zinc-800 !text-5xl font-bold text-zinc-100 placeholder:text-zinc-500 placeholder:text-3xl"
           />
         </div>
 
         {/* Check Type Buttons */}
         <div className="space-y-3">
-          <label className="text-2xl font-bold text-white">Check Type <span className="text-red-500">*</span></label>
+          <label className="text-2xl font-bold text-white">Check Type</label>
           <div className="grid grid-cols-3 gap-3">
             {(["startup", "daily", "shutdown"] as const).map((type) => (
               <Button
@@ -215,7 +216,7 @@ const Index = () => {
               placeholder="0"
               value={partA}
               onChange={(e) => setPartA(e.target.value)}
-              className="h-24 border-zinc-600 bg-zinc-800 text-5xl font-bold text-zinc-100 placeholder:text-zinc-500 placeholder:text-3xl"
+            className="h-24 border-2 border-zinc-500 bg-zinc-800 !text-5xl font-bold text-zinc-100 placeholder:text-zinc-500 placeholder:text-3xl"
             />
           </div>
           <div className="space-y-3">
@@ -226,7 +227,7 @@ const Index = () => {
               placeholder="0"
               value={partB}
               onChange={(e) => setPartB(e.target.value)}
-              className="h-24 border-zinc-600 bg-zinc-800 text-5xl font-bold text-zinc-100 placeholder:text-zinc-500 placeholder:text-3xl"
+              className="h-24 border-2 border-zinc-500 bg-zinc-800 !text-5xl font-bold text-zinc-100 placeholder:text-zinc-500 placeholder:text-3xl"
             />
           </div>
         </div>
@@ -253,7 +254,7 @@ const Index = () => {
             placeholder="Optional comments"
             value={comments}
             onChange={(e) => setComments(e.target.value)}
-            className="h-24 border-zinc-600 bg-zinc-800 text-5xl font-bold text-zinc-100 placeholder:text-zinc-500 placeholder:text-3xl"
+            className="h-24 border-2 border-zinc-500 bg-zinc-800 !text-5xl font-bold text-zinc-100 placeholder:text-zinc-500 placeholder:text-3xl"
           />
         </div>
 
