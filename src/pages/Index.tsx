@@ -213,8 +213,8 @@ const Index = () => {
         {/* Check Type Buttons */}
         <div className="space-y-2">
           <label className="text-xl font-bold text-white">Check Type</label>
-          <div className="grid grid-cols-2 gap-2">
-            {(["startup", "daily", "shutdown", "ratio"] as const).map((type) => (
+          <div className="grid grid-cols-3 gap-2">
+            {(["startup", "daily", "shutdown"] as const).map((type) => (
               <Button
                 key={type}
                 type="button"
@@ -229,10 +229,23 @@ const Index = () => {
               </Button>
             ))}
           </div>
+          <div className="flex justify-center">
+            <Button
+              type="button"
+              onClick={() => setCheckType(checkType === "ratio" ? null : "ratio")}
+              className={`h-14 w-1/3 text-lg font-bold uppercase ${
+                checkType === "ratio"
+                  ? "bg-amber-500 text-zinc-900 hover:bg-amber-400 ring-4 ring-amber-300"
+                  : "bg-zinc-700 text-zinc-300 hover:bg-zinc-600"
+              }`}
+            >
+              Ratio
+            </Button>
+          </div>
         </div>
 
         {/* Part A & Part B with Cup weights */}
-        <div className="grid grid-cols-2 gap-3">
+        <div className={`grid grid-cols-2 gap-3 transition-opacity ${checkType !== "ratio" ? "opacity-30 pointer-events-none" : ""}`}>
           {/* Column A */}
           <div className="space-y-2">
             <label className="text-xl font-bold text-white">Part A</label>
@@ -242,7 +255,8 @@ const Index = () => {
               placeholder="0"
               value={partA}
               onChange={(e) => setPartA(e.target.value)}
-              className="h-16 border-2 border-amber-500 bg-zinc-800 !text-4xl font-bold text-zinc-100 placeholder:text-zinc-500 placeholder:text-2xl"
+              disabled={checkType !== "ratio"}
+              className="h-16 border-2 border-amber-500 bg-zinc-800 !text-4xl font-bold text-zinc-100 placeholder:text-zinc-500 placeholder:text-2xl disabled:opacity-50"
             />
             <label className="text-lg font-bold text-zinc-400">Cup A</label>
             <Input
@@ -251,7 +265,8 @@ const Index = () => {
               placeholder="0"
               value={cupA}
               onChange={(e) => setCupA(e.target.value)}
-              className="h-16 border-2 border-amber-500 bg-zinc-800 !text-4xl font-bold text-zinc-100 placeholder:text-zinc-500 placeholder:text-2xl"
+              disabled={checkType !== "ratio"}
+              className="h-16 border-2 border-amber-500 bg-zinc-800 !text-4xl font-bold text-zinc-100 placeholder:text-zinc-500 placeholder:text-2xl disabled:opacity-50"
             />
           </div>
           {/* Column B */}
@@ -263,7 +278,8 @@ const Index = () => {
               placeholder="0"
               value={partB}
               onChange={(e) => setPartB(e.target.value)}
-              className="h-16 border-2 border-amber-500 bg-zinc-800 !text-4xl font-bold text-zinc-100 placeholder:text-zinc-500 placeholder:text-2xl"
+              disabled={checkType !== "ratio"}
+              className="h-16 border-2 border-amber-500 bg-zinc-800 !text-4xl font-bold text-zinc-100 placeholder:text-zinc-500 placeholder:text-2xl disabled:opacity-50"
             />
             <label className="text-lg font-bold text-zinc-400">Cup B</label>
             <Input
@@ -272,13 +288,14 @@ const Index = () => {
               placeholder="0"
               value={cupB}
               onChange={(e) => setCupB(e.target.value)}
-              className="h-16 border-2 border-amber-500 bg-zinc-800 !text-4xl font-bold text-zinc-100 placeholder:text-zinc-500 placeholder:text-2xl"
+              disabled={checkType !== "ratio"}
+              className="h-16 border-2 border-amber-500 bg-zinc-800 !text-4xl font-bold text-zinc-100 placeholder:text-zinc-500 placeholder:text-2xl disabled:opacity-50"
             />
           </div>
         </div>
 
         {/* Ratio Preview */}
-        <div className="rounded-lg border-2 border-zinc-600 bg-zinc-800 p-4">
+        <div className={`rounded-lg border-2 border-zinc-600 bg-zinc-800 p-4 transition-opacity ${checkType !== "ratio" ? "opacity-30" : ""}`}>
           <label className="text-lg font-bold text-white">Ratio (Part A - Cup A) ÷ (Part B - Cup B)</label>
           <p className="mt-2 text-4xl font-mono font-bold text-zinc-100">
             {previewRatio !== null ? previewRatio.toFixed(3) : "—"}
