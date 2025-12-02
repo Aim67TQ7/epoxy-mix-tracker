@@ -1179,6 +1179,7 @@ export type Database = {
           "Part A": string | null
           "Part B": string | null
           Ratio: string | null
+          "Ratio Check": string | null
           Shutdown: string | null
           Startup: string | null
           Timestamp: string | null
@@ -1192,6 +1193,7 @@ export type Database = {
           "Part A"?: string | null
           "Part B"?: string | null
           Ratio?: string | null
+          "Ratio Check"?: string | null
           Shutdown?: string | null
           Startup?: string | null
           Timestamp?: string | null
@@ -1205,6 +1207,7 @@ export type Database = {
           "Part A"?: string | null
           "Part B"?: string | null
           Ratio?: string | null
+          "Ratio Check"?: string | null
           Shutdown?: string | null
           Startup?: string | null
           Timestamp?: string | null
