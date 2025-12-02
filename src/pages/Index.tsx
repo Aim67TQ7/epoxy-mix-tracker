@@ -170,7 +170,7 @@ const Index = () => {
             placeholder="2-4 digits"
             value={employee}
             onChange={(e) => setEmployee(e.target.value.replace(/\D/g, "").slice(0, 4))}
-            className="h-16 border-zinc-600 bg-zinc-800 text-2xl text-zinc-100 placeholder:text-zinc-500"
+            className="h-20 border-zinc-600 bg-zinc-800 text-4xl font-bold text-zinc-100 placeholder:text-zinc-500"
           />
         </div>
 
@@ -205,7 +205,7 @@ const Index = () => {
               placeholder="0"
               value={partA}
               onChange={(e) => setPartA(e.target.value)}
-              className="h-16 border-zinc-600 bg-zinc-800 text-2xl text-zinc-100 placeholder:text-zinc-500"
+              className="h-20 border-zinc-600 bg-zinc-800 text-4xl font-bold text-zinc-100 placeholder:text-zinc-500"
             />
           </div>
           <div className="space-y-2">
@@ -216,7 +216,7 @@ const Index = () => {
               placeholder="0"
               value={partB}
               onChange={(e) => setPartB(e.target.value)}
-              className="h-16 border-zinc-600 bg-zinc-800 text-2xl text-zinc-100 placeholder:text-zinc-500"
+              className="h-20 border-zinc-600 bg-zinc-800 text-4xl font-bold text-zinc-100 placeholder:text-zinc-500"
             />
           </div>
         </div>
