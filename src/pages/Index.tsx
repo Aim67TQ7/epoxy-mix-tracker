@@ -30,10 +30,14 @@ const Index = () => {
     setIsAcceptable(false);
   };
 
+  const isValidEmployeeId = (id: string) => {
+    return /^\d{2,4}$/.test(id.trim());
+  };
+
   const handleSubmit = async () => {
-    // Employee ID is required
-    if (!employee.trim()) {
-      toast({ title: "Employee ID Required", variant: "destructive" });
+    // Employee ID is required and must be 2-4 digits
+    if (!isValidEmployeeId(employee)) {
+      toast({ title: "Invalid Employee ID", description: "Must be 2-4 digits", variant: "destructive" });
       return;
     }
     
@@ -157,11 +161,13 @@ const Index = () => {
             Employee ID <span className="text-red-500">*</span>
           </label>
           <Input
-            type="number"
+            type="text"
             inputMode="numeric"
-            placeholder="Enter ID"
+            pattern="\d{2,4}"
+            maxLength={4}
+            placeholder="2-4 digits"
             value={employee}
-            onChange={(e) => setEmployee(e.target.value)}
+            onChange={(e) => setEmployee(e.target.value.replace(/\D/g, "").slice(0, 4))}
             className="h-16 border-zinc-600 bg-zinc-800 text-2xl text-zinc-100 placeholder:text-zinc-500"
           />
         </div>
