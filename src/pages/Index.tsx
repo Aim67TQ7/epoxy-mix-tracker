@@ -3,7 +3,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { AlertTriangle, CheckCircle, Send, RotateCcw } from "lucide-react";
+import { AlertTriangle, CheckCircle, Send, RotateCcw, History } from "lucide-react";
+import { HistoryModal } from "@/components/HistoryModal";
 
 type CheckType = "startup" | "shutdown" | "daily";
 
@@ -19,6 +20,7 @@ const Index = () => {
   const [showResult, setShowResult] = useState(false);
   const [resultRatio, setResultRatio] = useState<number | null>(null);
   const [isAcceptable, setIsAcceptable] = useState(false);
+  const [historyOpen, setHistoryOpen] = useState(false);
 
   const resetForm = () => {
     setEmployee("");
@@ -246,6 +248,18 @@ const Index = () => {
             </>
           )}
         </Button>
+
+        {/* View History Button */}
+        <Button
+          onClick={() => setHistoryOpen(true)}
+          variant="outline"
+          className="h-14 w-full border-zinc-600 bg-zinc-800 text-lg font-medium text-zinc-300 hover:bg-zinc-700"
+        >
+          <History className="mr-2 h-5 w-5" />
+          View History
+        </Button>
+
+        <HistoryModal open={historyOpen} onOpenChange={setHistoryOpen} />
       </div>
     </div>
   );
