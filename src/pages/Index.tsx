@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { AlertTriangle, CheckCircle, Send } from "lucide-react";
+import { AlertTriangle, CheckCircle, Send, RotateCcw } from "lucide-react";
 
 type CheckType = "startup" | "shutdown" | "daily";
 
@@ -14,49 +14,47 @@ const Index = () => {
   const [partA, setPartA] = useState("");
   const [partB, setPartB] = useState("");
   const [checkType, setCheckType] = useState<CheckType>("daily");
-  const [ratioStatus, setRatioStatus] = useState<"ok" | "out-of-range" | null>(null);
-  const [ratio, setRatio] = useState("");
+  
+  // Result state - only shown after submit
+  const [showResult, setShowResult] = useState(false);
+  const [resultRatio, setResultRatio] = useState<number | null>(null);
+  const [isAcceptable, setIsAcceptable] = useState(false);
 
-  const calculateRatio = (a: string, b: string) => {
-    const aNum = parseFloat(a);
-    const bNum = parseFloat(b);
-    
-    if (!isNaN(aNum) && !isNaN(bNum) && bNum !== 0) {
-      const r = (aNum / bNum).toFixed(2);
-      setRatio(r);
-      const ratioValue = aNum / bNum;
-      setRatioStatus(ratioValue >= 2 && ratioValue <= 4 ? "ok" : "out-of-range");
-    } else {
-      setRatio("");
-      setRatioStatus(null);
-    }
-  };
-
-  const handlePartAChange = (value: string) => {
-    setPartA(value);
-    calculateRatio(value, partB);
-  };
-
-  const handlePartBChange = (value: string) => {
-    setPartB(value);
-    calculateRatio(partA, value);
+  const resetForm = () => {
+    setEmployee("");
+    setPartA("");
+    setPartB("");
+    setCheckType("daily");
+    setShowResult(false);
+    setResultRatio(null);
+    setIsAcceptable(false);
   };
 
   const handleSubmit = async () => {
-    if (!employee) {
-      toast({ title: "Enter Employee ID", variant: "destructive" });
+    // Employee ID is required
+    if (!employee.trim()) {
+      toast({ title: "Employee ID Required", variant: "destructive" });
       return;
     }
     
     setIsSubmitting(true);
     
     try {
+      // Calculate ratio if both parts are provided
+      let ratio: string | null = null;
+      let ratioValue: number | null = null;
+      
+      if (partA && partB && parseFloat(partB) !== 0) {
+        ratioValue = parseFloat(partA) / parseFloat(partB);
+        ratio = ratioValue.toFixed(3);
+      }
+
       const { error } = await supabase.from("EpoxyMix").insert({
         UUID: crypto.randomUUID(),
         Timestamp: new Date().toISOString(),
         Employee: parseInt(employee) || null,
-        "Part A": partA,
-        "Part B": partB,
+        "Part A": partA || null,
+        "Part B": partB || null,
         Ratio: ratio,
         "Daily Check": checkType === "daily" ? "Yes" : null,
         Startup: checkType === "startup" ? "Yes" : null,
@@ -65,15 +63,21 @@ const Index = () => {
 
       if (error) throw error;
 
-      toast({ title: "✓ Saved!", description: "Record submitted successfully" });
-      
-      // Reset form
-      setEmployee("");
-      setPartA("");
-      setPartB("");
-      setRatio("");
-      setRatioStatus(null);
-      setCheckType("daily");
+      // Show result only if ratio was calculated
+      if (ratioValue !== null) {
+        const acceptable = ratioValue >= 11.878 && ratioValue <= 12.362;
+        setResultRatio(ratioValue);
+        setIsAcceptable(acceptable);
+        setShowResult(true);
+        
+        if (acceptable) {
+          toast({ title: "✓ Saved - Ratio Acceptable" });
+        }
+      } else {
+        // No ratio calculated (e.g., startup check only)
+        toast({ title: "✓ Saved!" });
+        resetForm();
+      }
     } catch (error) {
       console.error("Error:", error);
       toast({ title: "Error", description: "Failed to save", variant: "destructive" });
@@ -81,6 +85,61 @@ const Index = () => {
       setIsSubmitting(false);
     }
   };
+
+  // Result screen after submit
+  if (showResult && resultRatio !== null) {
+    return (
+      <div className={`min-h-screen p-4 ${isAcceptable ? "bg-zinc-900" : "bg-red-900"}`}>
+        <div className="mx-auto max-w-xl space-y-6">
+          <div className={`rounded-lg border-4 p-6 text-center ${
+            isAcceptable 
+              ? "border-green-500 bg-green-950/50" 
+              : "border-red-500 bg-red-950/80"
+          }`}>
+            {isAcceptable ? (
+              <>
+                <CheckCircle className="mx-auto h-20 w-20 text-green-500" />
+                <h1 className="mt-4 text-3xl font-bold text-green-400">ACCEPTABLE</h1>
+                <p className="mt-2 text-4xl font-mono font-bold text-white">
+                  Ratio: {resultRatio.toFixed(3)}
+                </p>
+                <p className="mt-2 text-lg text-zinc-400">
+                  Range: 11.878 - 12.362
+                </p>
+              </>
+            ) : (
+              <>
+                <AlertTriangle className="mx-auto h-20 w-20 text-red-500" />
+                <h1 className="mt-4 text-3xl font-bold text-red-400">OUT OF RANGE</h1>
+                <p className="mt-2 text-4xl font-mono font-bold text-white">
+                  Ratio: {resultRatio.toFixed(3)}
+                </p>
+                <p className="mt-2 text-lg text-zinc-300">
+                  Acceptable Range: 11.878 - 12.362
+                </p>
+                <div className="mt-6 rounded-lg bg-red-800 p-4">
+                  <p className="text-xl font-bold text-white">
+                    ⚠️ RETEST REQUIRED
+                  </p>
+                  <p className="mt-2 text-lg text-red-200">
+                    Contact Supervisor if problem persists
+                  </p>
+                </div>
+              </>
+            )}
+          </div>
+
+          <Button
+            onClick={resetForm}
+            className="h-16 w-full bg-zinc-700 text-xl font-bold text-white hover:bg-zinc-600"
+          >
+            <RotateCcw className="mr-2 h-6 w-6" />
+            New Entry
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-zinc-900 p-4">
@@ -92,9 +151,11 @@ const Index = () => {
           </h1>
         </div>
 
-        {/* Employee ID */}
+        {/* Employee ID - Required */}
         <div className="space-y-2">
-          <label className="text-lg font-medium text-zinc-300">Employee ID</label>
+          <label className="text-lg font-medium text-zinc-300">
+            Employee ID <span className="text-red-500">*</span>
+          </label>
           <Input
             type="number"
             inputMode="numeric"
@@ -104,56 +165,6 @@ const Index = () => {
             className="h-16 border-zinc-600 bg-zinc-800 text-2xl text-zinc-100 placeholder:text-zinc-500"
           />
         </div>
-
-        {/* Part A & Part B */}
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <label className="text-lg font-medium text-zinc-300">Part A</label>
-            <Input
-              type="number"
-              inputMode="decimal"
-              placeholder="0"
-              value={partA}
-              onChange={(e) => handlePartAChange(e.target.value)}
-              className="h-16 border-zinc-600 bg-zinc-800 text-2xl text-zinc-100 placeholder:text-zinc-500"
-            />
-          </div>
-          <div className="space-y-2">
-            <label className="text-lg font-medium text-zinc-300">Part B</label>
-            <Input
-              type="number"
-              inputMode="decimal"
-              placeholder="0"
-              value={partB}
-              onChange={(e) => handlePartBChange(e.target.value)}
-              className="h-16 border-zinc-600 bg-zinc-800 text-2xl text-zinc-100 placeholder:text-zinc-500"
-            />
-          </div>
-        </div>
-
-        {/* Ratio Display */}
-        {ratio && (
-          <div className={`flex items-center justify-between rounded-lg border-2 p-4 ${
-            ratioStatus === "out-of-range" 
-              ? "border-red-500 bg-red-950/50" 
-              : "border-green-500 bg-green-950/50"
-          }`}>
-            <span className="text-3xl font-mono font-bold text-zinc-100">
-              Ratio: {ratio}:1
-            </span>
-            {ratioStatus === "out-of-range" ? (
-              <div className="flex items-center gap-2 text-red-500">
-                <AlertTriangle className="h-8 w-8" />
-                <span className="text-lg font-bold">OUT OF RANGE</span>
-              </div>
-            ) : (
-              <div className="flex items-center gap-2 text-green-500">
-                <CheckCircle className="h-8 w-8" />
-                <span className="text-lg font-bold">OK</span>
-              </div>
-            )}
-          </div>
-        )}
 
         {/* Check Type Buttons */}
         <div className="space-y-2">
@@ -174,6 +185,46 @@ const Index = () => {
               </Button>
             ))}
           </div>
+        </div>
+
+        {/* Part A & Part B */}
+        <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <label className="text-lg font-medium text-zinc-300">Part A</label>
+            <Input
+              type="number"
+              inputMode="decimal"
+              placeholder="0"
+              value={partA}
+              onChange={(e) => setPartA(e.target.value)}
+              className="h-16 border-zinc-600 bg-zinc-800 text-2xl text-zinc-100 placeholder:text-zinc-500"
+            />
+          </div>
+          <div className="space-y-2">
+            <label className="text-lg font-medium text-zinc-300">Part B</label>
+            <Input
+              type="number"
+              inputMode="decimal"
+              placeholder="0"
+              value={partB}
+              onChange={(e) => setPartB(e.target.value)}
+              className="h-16 border-zinc-600 bg-zinc-800 text-2xl text-zinc-100 placeholder:text-zinc-500"
+            />
+          </div>
+        </div>
+
+        {/* Ratio Preview (calculated but not validated until submit) */}
+        <div className="rounded-lg border border-zinc-700 bg-zinc-800 p-4">
+          <label className="text-lg font-medium text-zinc-300">Ratio (Part A ÷ Part B)</label>
+          <p className="mt-2 text-3xl font-mono font-bold text-zinc-100">
+            {partA && partB && parseFloat(partB) !== 0 
+              ? (parseFloat(partA) / parseFloat(partB)).toFixed(3)
+              : "—"
+            }
+          </p>
+          <p className="mt-1 text-sm text-zinc-500">
+            Acceptable: 11.878 - 12.362
+          </p>
         </div>
 
         {/* Submit Button */}
