@@ -7,7 +7,7 @@ import { AlertTriangle, CheckCircle, Send, RotateCcw, History } from "lucide-rea
 import { HistoryModal } from "@/components/HistoryModal";
 import logo from "@/assets/logo.png";
 
-type CheckType = "startup" | "shutdown" | "daily" | null;
+type CheckType = "startup" | "daily" | "shutdown" | "ratio" | null;
 
 const Index = () => {
   const { toast } = useToast();
@@ -97,6 +97,7 @@ const Index = () => {
         "Daily Check": checkType === "daily" ? "Yes" : null,
         Startup: checkType === "startup" ? "Yes" : null,
         Shutdown: checkType === "shutdown" ? "Yes" : null,
+        "Ratio Check": checkType === "ratio" ? "Yes" : null,
       });
 
       if (error) throw error;
@@ -212,8 +213,8 @@ const Index = () => {
         {/* Check Type Buttons */}
         <div className="space-y-2">
           <label className="text-xl font-bold text-white">Check Type</label>
-          <div className="grid grid-cols-3 gap-2">
-            {(["startup", "daily", "shutdown"] as const).map((type) => (
+          <div className="grid grid-cols-2 gap-2">
+            {(["startup", "daily", "shutdown", "ratio"] as const).map((type) => (
               <Button
                 key={type}
                 type="button"
