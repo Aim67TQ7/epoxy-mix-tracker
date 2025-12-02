@@ -1172,6 +1172,8 @@ export type Database = {
       }
       EpoxyMix: {
         Row: {
+          "Cup A": string | null
+          "Cup B": string | null
           "Daily Check": string | null
           Employee: number | null
           "Part A": string | null
@@ -1183,6 +1185,8 @@ export type Database = {
           UUID: string
         }
         Insert: {
+          "Cup A"?: string | null
+          "Cup B"?: string | null
           "Daily Check"?: string | null
           Employee?: number | null
           "Part A"?: string | null
@@ -1194,6 +1198,8 @@ export type Database = {
           UUID: string
         }
         Update: {
+          "Cup A"?: string | null
+          "Cup B"?: string | null
           "Daily Check"?: string | null
           Employee?: number | null
           "Part A"?: string | null
