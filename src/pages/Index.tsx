@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { AlertTriangle, CheckCircle, Send, RotateCcw, History } from "lucide-react";
 import { HistoryModal } from "@/components/HistoryModal";
+import logo from "@/assets/logo.png";
 
 type CheckType = "startup" | "shutdown" | "daily" | null;
 
@@ -157,7 +158,8 @@ const Index = () => {
     <div className="min-h-screen bg-zinc-900 p-4">
       <div className="mx-auto max-w-xl space-y-6">
         {/* Header */}
-        <div className="border-l-4 border-amber-500 bg-zinc-800 p-4">
+        <div className="border-l-4 border-amber-500 bg-zinc-800 p-4 flex items-center gap-4">
+          <img src={logo} alt="Logo" className="h-12 w-12 object-contain" />
           <h1 className="text-2xl font-bold uppercase tracking-wider text-amber-500">
             Epoxy Mix Log
           </h1>
