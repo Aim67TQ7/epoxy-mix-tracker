@@ -190,7 +190,7 @@ const Index = () => {
               <Button
                 key={type}
                 type="button"
-                onClick={() => setCheckType(type)}
+                onClick={() => setCheckType(checkType === type ? null : type)}
                 className={`h-16 text-lg font-bold uppercase ${
                   checkType === type
                     ? "bg-amber-500 text-zinc-900 hover:bg-amber-400"
