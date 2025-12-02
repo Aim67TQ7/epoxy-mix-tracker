@@ -157,19 +157,19 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-900 p-4">
-      <div className="mx-auto max-w-xl space-y-6">
+    <div className="min-h-screen bg-zinc-900 p-6">
+      <div className="mx-auto max-w-xl space-y-8">
         {/* Header */}
-        <div className="border-l-4 border-amber-500 bg-zinc-800 p-4 flex items-center gap-4">
-          <img src={logo} alt="Logo" className="h-12 w-12 object-contain" />
-          <h1 className="text-2xl font-bold uppercase tracking-wider text-amber-500">
+        <div className="border-l-4 border-amber-500 bg-zinc-800 p-6 flex items-center gap-4">
+          <img src={logo} alt="Logo" className="h-16 w-16 object-contain" />
+          <h1 className="text-3xl font-bold uppercase tracking-wider text-amber-500">
             Epoxy Mix Log
           </h1>
         </div>
 
         {/* Employee ID - Required */}
-        <div className="space-y-2">
-          <label className="text-lg font-medium text-zinc-300">
+        <div className="space-y-3">
+          <label className="text-2xl font-bold text-white">
             Employee ID <span className="text-red-500">*</span>
           </label>
           <Input
@@ -185,17 +185,17 @@ const Index = () => {
         </div>
 
         {/* Check Type Buttons */}
-        <div className="space-y-2">
-          <label className="text-lg font-medium text-zinc-300">Check Type</label>
+        <div className="space-y-3">
+          <label className="text-2xl font-bold text-white">Check Type <span className="text-red-500">*</span></label>
           <div className="grid grid-cols-3 gap-3">
             {(["startup", "daily", "shutdown"] as const).map((type) => (
               <Button
                 key={type}
                 type="button"
                 onClick={() => setCheckType(checkType === type ? null : type)}
-                className={`h-16 text-lg font-bold uppercase ${
+                className={`h-20 text-xl font-bold uppercase ${
                   checkType === type
-                    ? "bg-amber-500 text-zinc-900 hover:bg-amber-400"
+                    ? "bg-amber-500 text-zinc-900 hover:bg-amber-400 ring-4 ring-amber-300"
                     : "bg-zinc-700 text-zinc-300 hover:bg-zinc-600"
                 }`}
               >
@@ -207,8 +207,8 @@ const Index = () => {
 
         {/* Part A & Part B */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <label className="text-lg font-medium text-zinc-300">Part A</label>
+          <div className="space-y-3">
+            <label className="text-2xl font-bold text-white">Part A</label>
             <Input
               type="number"
               inputMode="decimal"
@@ -218,8 +218,8 @@ const Index = () => {
               className="h-24 border-zinc-600 bg-zinc-800 text-5xl font-bold text-zinc-100 placeholder:text-zinc-500 placeholder:text-3xl"
             />
           </div>
-          <div className="space-y-2">
-            <label className="text-lg font-medium text-zinc-300">Part B</label>
+          <div className="space-y-3">
+            <label className="text-2xl font-bold text-white">Part B</label>
             <Input
               type="number"
               inputMode="decimal"
@@ -232,22 +232,22 @@ const Index = () => {
         </div>
 
         {/* Ratio Preview (calculated but not validated until submit) */}
-        <div className="rounded-lg border border-zinc-700 bg-zinc-800 p-4">
-          <label className="text-lg font-medium text-zinc-300">Ratio (Part A ÷ Part B)</label>
-          <p className="mt-2 text-3xl font-mono font-bold text-zinc-100">
+        <div className="rounded-lg border-2 border-zinc-600 bg-zinc-800 p-6">
+          <label className="text-2xl font-bold text-white">Ratio (Part A ÷ Part B)</label>
+          <p className="mt-3 text-5xl font-mono font-bold text-zinc-100">
             {partA && partB && parseFloat(partB) !== 0 
               ? (parseFloat(partA) / parseFloat(partB)).toFixed(3)
               : "—"
             }
           </p>
-          <p className="mt-1 text-sm text-zinc-500">
+          <p className="mt-2 text-xl text-zinc-400">
             Acceptable: 11.878 - 12.362
           </p>
         </div>
 
         {/* Comments */}
-        <div className="space-y-2">
-          <label className="text-lg font-medium text-zinc-300">Comments</label>
+        <div className="space-y-3">
+          <label className="text-2xl font-bold text-white">Comments</label>
           <Input
             type="text"
             placeholder="Optional comments"
@@ -261,11 +261,11 @@ const Index = () => {
         <Button
           onClick={handleSubmit}
           disabled={isSubmitting}
-          className="h-20 w-full bg-green-600 text-2xl font-bold uppercase tracking-wider text-white hover:bg-green-500 disabled:opacity-50"
+          className="h-24 w-full bg-green-600 text-3xl font-bold uppercase tracking-wider text-white hover:bg-green-500 disabled:opacity-50"
         >
           {isSubmitting ? "Saving..." : (
             <>
-              <Send className="mr-3 h-6 w-6" />
+              <Send className="mr-3 h-8 w-8" />
               Submit
             </>
           )}
@@ -275,9 +275,9 @@ const Index = () => {
         <Button
           onClick={() => setHistoryOpen(true)}
           variant="outline"
-          className="h-14 w-full border-zinc-600 bg-zinc-800 text-lg font-medium text-zinc-300 hover:bg-zinc-700"
+          className="h-20 w-full border-2 border-zinc-500 bg-zinc-800 text-2xl font-bold text-zinc-200 hover:bg-zinc-700"
         >
-          <History className="mr-2 h-5 w-5" />
+          <History className="mr-3 h-7 w-7" />
           View History
         </Button>
 
