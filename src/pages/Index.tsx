@@ -16,6 +16,7 @@ const Index = () => {
   const [partA, setPartA] = useState("");
   const [partB, setPartB] = useState("");
   const [checkType, setCheckType] = useState<CheckType>(null);
+  const [comments, setComments] = useState("");
   
   // Result state - only shown after submit
   const [showResult, setShowResult] = useState(false);
@@ -28,6 +29,7 @@ const Index = () => {
     setPartA("");
     setPartB("");
     setCheckType(null);
+    setComments("");
     setShowResult(false);
     setResultRatio(null);
     setIsAcceptable(false);
@@ -241,6 +243,18 @@ const Index = () => {
           <p className="mt-1 text-sm text-zinc-500">
             Acceptable: 11.878 - 12.362
           </p>
+        </div>
+
+        {/* Comments */}
+        <div className="space-y-2">
+          <label className="text-lg font-medium text-zinc-300">Comments</label>
+          <Input
+            type="text"
+            placeholder="Optional comments"
+            value={comments}
+            onChange={(e) => setComments(e.target.value)}
+            className="h-24 border-zinc-600 bg-zinc-800 text-5xl font-bold text-zinc-100 placeholder:text-zinc-500 placeholder:text-3xl"
+          />
         </div>
 
         {/* Submit Button */}
