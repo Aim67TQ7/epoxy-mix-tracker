@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { SPCChart } from "./SPCChart";
 import { CheckLog } from "./CheckLog";
-import { BarChart3, ClipboardList, Loader2, Download } from "lucide-react";
+import { EditTableModal } from "./EditTableModal";
+import { BarChart3, ClipboardList, Loader2, Download, Pencil } from "lucide-react";
 import * as XLSX from "xlsx";
 
 interface EpoxyMixRecord {
@@ -29,6 +30,7 @@ export function HistoryModal({ open, onOpenChange }: HistoryModalProps) {
   const [data, setData] = useState<EpoxyMixRecord[]>([]);
   const [loading, setLoading] = useState(false);
   const [downloading, setDownloading] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
 
   useEffect(() => {
     if (open) {
@@ -112,21 +114,34 @@ export function HistoryModal({ open, onOpenChange }: HistoryModalProps) {
       <DialogContent className="max-h-[90vh] max-w-4xl overflow-hidden bg-zinc-900 text-zinc-100">
         <DialogHeader className="flex flex-row items-center justify-between">
           <DialogTitle className="text-xl">Epoxy Mix History</DialogTitle>
-          <Button
-            onClick={handleDownloadExcel}
-            disabled={downloading || loading}
-            variant="outline"
-            size="sm"
-            className="mr-8 border-zinc-600 bg-zinc-800 text-zinc-300 hover:bg-zinc-700"
-          >
-            {downloading ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            ) : (
-              <Download className="mr-2 h-4 w-4" />
-            )}
-            Download Excel
-          </Button>
+          <div className="mr-8 flex gap-2">
+            <Button
+              onClick={() => setEditModalOpen(true)}
+              variant="outline"
+              size="sm"
+              className="border-zinc-600 bg-zinc-800 text-zinc-300 hover:bg-zinc-700"
+            >
+              <Pencil className="mr-2 h-4 w-4" />
+              Edit Table
+            </Button>
+            <Button
+              onClick={handleDownloadExcel}
+              disabled={downloading || loading}
+              variant="outline"
+              size="sm"
+              className="border-zinc-600 bg-zinc-800 text-zinc-300 hover:bg-zinc-700"
+            >
+              {downloading ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <Download className="mr-2 h-4 w-4" />
+              )}
+              Download Excel
+            </Button>
+          </div>
         </DialogHeader>
+        
+        <EditTableModal open={editModalOpen} onOpenChange={setEditModalOpen} />
 
         {loading ? (
           <div className="flex h-64 items-center justify-center">

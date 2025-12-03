@@ -248,7 +248,7 @@ const Index = () => {
         <div className={`grid grid-cols-2 gap-3 transition-opacity ${checkType !== "ratio" ? "opacity-30 pointer-events-none" : ""}`}>
           {/* Column A */}
           <div className="space-y-2">
-            <label className="text-xl font-bold text-white">Part A</label>
+            <label className="text-xl font-bold text-white">Part A <span className="text-zinc-400">(Cup Full)</span></label>
             <Input
               type="number"
               inputMode="decimal"
@@ -258,7 +258,7 @@ const Index = () => {
               disabled={checkType !== "ratio"}
               className="h-16 border-2 border-amber-500 bg-zinc-800 !text-4xl font-bold text-zinc-100 placeholder:text-zinc-500 placeholder:text-2xl disabled:opacity-50"
             />
-            <label className="text-lg font-bold text-zinc-400">Cup A</label>
+            <label className="text-lg font-bold text-zinc-400">Cup A <span className="text-zinc-500">(Cup Empty)</span></label>
             <Input
               type="number"
               inputMode="decimal"
@@ -271,7 +271,7 @@ const Index = () => {
           </div>
           {/* Column B */}
           <div className="space-y-2">
-            <label className="text-xl font-bold text-white">Part B</label>
+            <label className="text-xl font-bold text-white">Part B <span className="text-zinc-400">(Cup Full)</span></label>
             <Input
               type="number"
               inputMode="decimal"
@@ -281,7 +281,7 @@ const Index = () => {
               disabled={checkType !== "ratio"}
               className="h-16 border-2 border-amber-500 bg-zinc-800 !text-4xl font-bold text-zinc-100 placeholder:text-zinc-500 placeholder:text-2xl disabled:opacity-50"
             />
-            <label className="text-lg font-bold text-zinc-400">Cup B</label>
+            <label className="text-lg font-bold text-zinc-400">Cup B <span className="text-zinc-500">(Cup Empty)</span></label>
             <Input
               type="number"
               inputMode="decimal"
