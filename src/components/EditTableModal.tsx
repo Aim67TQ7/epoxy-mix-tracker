@@ -187,106 +187,108 @@ export function EditTableModal({ open, onOpenChange }: EditTableModalProps) {
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
           </div>
         ) : (
-          <ScrollArea className="h-[70vh]">
-            <Table>
-              <TableHeader>
-                <TableRow className="border-zinc-700">
-                  <TableHead className="text-zinc-400">Timestamp</TableHead>
-                  <TableHead className="text-zinc-400">Employee</TableHead>
-                  <TableHead className="text-zinc-400">Part A</TableHead>
-                  <TableHead className="text-zinc-400">Cup A</TableHead>
-                  <TableHead className="text-zinc-400">Part B</TableHead>
-                  <TableHead className="text-zinc-400">Cup B</TableHead>
-                  <TableHead className="text-zinc-400">Ratio</TableHead>
-                  <TableHead className="text-zinc-400">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {data.map((record) => (
-                  <TableRow key={record.UUID} className="border-zinc-700">
-                    <TableCell className="text-xs text-zinc-400">
-                      {formatDate(record.Timestamp)}
-                    </TableCell>
-                    {editingId === record.UUID ? (
-                      <>
-                        <TableCell>
-                          <Input
-                            type="number"
-                            value={editValues.Employee ?? ""}
-                            onChange={(e) => setEditValues({ ...editValues, Employee: parseInt(e.target.value) || null })}
-                            className="h-8 w-16 bg-zinc-800 text-sm"
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <Input
-                            value={editValues["Part A"] ?? ""}
-                            onChange={(e) => setEditValues({ ...editValues, "Part A": e.target.value })}
-                            className="h-8 w-20 bg-zinc-800 text-sm"
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <Input
-                            value={editValues["Cup A"] ?? ""}
-                            onChange={(e) => setEditValues({ ...editValues, "Cup A": e.target.value })}
-                            className="h-8 w-20 bg-zinc-800 text-sm"
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <Input
-                            value={editValues["Part B"] ?? ""}
-                            onChange={(e) => setEditValues({ ...editValues, "Part B": e.target.value })}
-                            className="h-8 w-20 bg-zinc-800 text-sm"
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <Input
-                            value={editValues["Cup B"] ?? ""}
-                            onChange={(e) => setEditValues({ ...editValues, "Cup B": e.target.value })}
-                            className="h-8 w-20 bg-zinc-800 text-sm"
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <Input
-                            value={editValues.Ratio ?? ""}
-                            onChange={(e) => setEditValues({ ...editValues, Ratio: e.target.value })}
-                            className="h-8 w-20 bg-zinc-800 text-sm"
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex gap-1">
-                            <Button size="sm" onClick={() => saveEdit(record.UUID)} className="h-7 bg-green-600 hover:bg-green-500">
-                              <Save className="h-3 w-3" />
-                            </Button>
-                            <Button size="sm" variant="ghost" onClick={cancelEdit} className="h-7">
-                              ✕
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </>
-                    ) : (
-                      <>
-                        <TableCell>{record.Employee ?? "—"}</TableCell>
-                        <TableCell>{record["Part A"] ?? "—"}</TableCell>
-                        <TableCell>{record["Cup A"] ?? "—"}</TableCell>
-                        <TableCell>{record["Part B"] ?? "—"}</TableCell>
-                        <TableCell>{record["Cup B"] ?? "—"}</TableCell>
-                        <TableCell className="font-mono">{record.Ratio ?? "—"}</TableCell>
-                        <TableCell>
-                          <div className="flex gap-1">
-                            <Button size="sm" variant="outline" onClick={() => startEdit(record)} className="h-7 border-zinc-600">
-                              Edit
-                            </Button>
-                            <Button size="sm" variant="destructive" onClick={() => deleteRecord(record.UUID)} className="h-7">
-                              <Trash2 className="h-3 w-3" />
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </>
-                    )}
+          <ScrollArea className="h-[60vh] w-full">
+            <div className="min-w-[800px]">
+              <Table>
+                <TableHeader>
+                  <TableRow className="border-zinc-700">
+                    <TableHead className="text-zinc-400">Timestamp</TableHead>
+                    <TableHead className="text-zinc-400">Employee</TableHead>
+                    <TableHead className="text-zinc-400">Part A</TableHead>
+                    <TableHead className="text-zinc-400">Cup A</TableHead>
+                    <TableHead className="text-zinc-400">Part B</TableHead>
+                    <TableHead className="text-zinc-400">Cup B</TableHead>
+                    <TableHead className="text-zinc-400">Ratio</TableHead>
+                    <TableHead className="text-zinc-400">Actions</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {data.map((record) => (
+                    <TableRow key={record.UUID} className="border-zinc-700">
+                      <TableCell className="text-xs text-zinc-400">
+                        {formatDate(record.Timestamp)}
+                      </TableCell>
+                      {editingId === record.UUID ? (
+                        <>
+                          <TableCell>
+                            <Input
+                              type="number"
+                              value={editValues.Employee ?? ""}
+                              onChange={(e) => setEditValues({ ...editValues, Employee: parseInt(e.target.value) || null })}
+                              className="h-8 w-16 bg-zinc-800 text-sm"
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <Input
+                              value={editValues["Part A"] ?? ""}
+                              onChange={(e) => setEditValues({ ...editValues, "Part A": e.target.value })}
+                              className="h-8 w-20 bg-zinc-800 text-sm"
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <Input
+                              value={editValues["Cup A"] ?? ""}
+                              onChange={(e) => setEditValues({ ...editValues, "Cup A": e.target.value })}
+                              className="h-8 w-20 bg-zinc-800 text-sm"
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <Input
+                              value={editValues["Part B"] ?? ""}
+                              onChange={(e) => setEditValues({ ...editValues, "Part B": e.target.value })}
+                              className="h-8 w-20 bg-zinc-800 text-sm"
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <Input
+                              value={editValues["Cup B"] ?? ""}
+                              onChange={(e) => setEditValues({ ...editValues, "Cup B": e.target.value })}
+                              className="h-8 w-20 bg-zinc-800 text-sm"
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <Input
+                              value={editValues.Ratio ?? ""}
+                              onChange={(e) => setEditValues({ ...editValues, Ratio: e.target.value })}
+                              className="h-8 w-20 bg-zinc-800 text-sm"
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex gap-1">
+                              <Button size="sm" onClick={() => saveEdit(record.UUID)} className="h-7 bg-green-600 hover:bg-green-500">
+                                <Save className="h-3 w-3" />
+                              </Button>
+                              <Button size="sm" variant="ghost" onClick={cancelEdit} className="h-7">
+                                ✕
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </>
+                      ) : (
+                        <>
+                          <TableCell>{record.Employee ?? "—"}</TableCell>
+                          <TableCell>{record["Part A"] ?? "—"}</TableCell>
+                          <TableCell>{record["Cup A"] ?? "—"}</TableCell>
+                          <TableCell>{record["Part B"] ?? "—"}</TableCell>
+                          <TableCell>{record["Cup B"] ?? "—"}</TableCell>
+                          <TableCell className="font-mono">{record.Ratio ?? "—"}</TableCell>
+                          <TableCell>
+                            <div className="flex gap-1">
+                              <Button size="sm" variant="outline" onClick={() => startEdit(record)} className="h-7 border-zinc-600">
+                                Edit
+                              </Button>
+                              <Button size="sm" variant="destructive" onClick={() => deleteRecord(record.UUID)} className="h-7">
+                                <Trash2 className="h-3 w-3" />
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </>
+                      )}
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           </ScrollArea>
         )}
       </DialogContent>
