@@ -1190,12 +1190,17 @@ export type Database = {
           "Cup B": string | null
           "Daily Check": string | null
           Employee: number | null
+          Humidity_1: string | null
+          Humidity_2: string | null
           "Part A": string | null
           "Part B": string | null
           Ratio: string | null
           "Ratio Check": string | null
+          Sensor_Timestamp: string | null
           Shutdown: string | null
           Startup: string | null
+          Temperature_1: string | null
+          Temperature_2: string | null
           Timestamp: string | null
           UUID: string
         }
@@ -1204,12 +1209,17 @@ export type Database = {
           "Cup B"?: string | null
           "Daily Check"?: string | null
           Employee?: number | null
+          Humidity_1?: string | null
+          Humidity_2?: string | null
           "Part A"?: string | null
           "Part B"?: string | null
           Ratio?: string | null
           "Ratio Check"?: string | null
+          Sensor_Timestamp?: string | null
           Shutdown?: string | null
           Startup?: string | null
+          Temperature_1?: string | null
+          Temperature_2?: string | null
           Timestamp?: string | null
           UUID: string
         }
@@ -1218,12 +1228,17 @@ export type Database = {
           "Cup B"?: string | null
           "Daily Check"?: string | null
           Employee?: number | null
+          Humidity_1?: string | null
+          Humidity_2?: string | null
           "Part A"?: string | null
           "Part B"?: string | null
           Ratio?: string | null
           "Ratio Check"?: string | null
+          Sensor_Timestamp?: string | null
           Shutdown?: string | null
           Startup?: string | null
+          Temperature_1?: string | null
+          Temperature_2?: string | null
           Timestamp?: string | null
           UUID?: string
         }
