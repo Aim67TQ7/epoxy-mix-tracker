@@ -1115,48 +1115,65 @@ export type Database = {
       }
       employees: {
         Row: {
+          benefit_class: string | null
+          business_unit: string | null
           created_at: string
           department: string | null
-          email: string | null
-          employee_id: string
-          employment_type: string
-          first_name: string
-          hire_date: string
+          hire_date: string | null
           id: string
           is_active: boolean
-          last_name: string
-          position: string | null
+          job_title: string | null
+          location: string | null
+          name_first: string
+          name_last: string
+          reports_to: string
           updated_at: string
+          user_id: string | null
+          work_category: string | null
         }
         Insert: {
+          benefit_class?: string | null
+          business_unit?: string | null
           created_at?: string
           department?: string | null
-          email?: string | null
-          employee_id: string
-          employment_type?: string
-          first_name: string
-          hire_date: string
+          hire_date?: string | null
           id?: string
           is_active?: boolean
-          last_name: string
-          position?: string | null
+          job_title?: string | null
+          location?: string | null
+          name_first: string
+          name_last: string
+          reports_to?: string
           updated_at?: string
+          user_id?: string | null
+          work_category?: string | null
         }
         Update: {
+          benefit_class?: string | null
+          business_unit?: string | null
           created_at?: string
           department?: string | null
-          email?: string | null
-          employee_id?: string
-          employment_type?: string
-          first_name?: string
-          hire_date?: string
+          hire_date?: string | null
           id?: string
           is_active?: boolean
-          last_name?: string
-          position?: string | null
+          job_title?: string | null
+          location?: string | null
+          name_first?: string
+          name_last?: string
+          reports_to?: string
           updated_at?: string
+          user_id?: string | null
+          work_category?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "employees_reports_to_fkey"
+            columns: ["reports_to"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       emps: {
         Row: {
@@ -1506,6 +1523,42 @@ export type Database = {
           is_active?: boolean | null
         }
         Relationships: []
+      }
+      forklift_question_assignments: {
+        Row: {
+          created_at: string | null
+          forklift_id: string
+          id: string
+          question_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          forklift_id: string
+          id?: string
+          question_id: string
+        }
+        Update: {
+          created_at?: string | null
+          forklift_id?: string
+          id?: string
+          question_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "forklift_question_assignments_forklift_id_fkey"
+            columns: ["forklift_id"]
+            isOneToOne: false
+            referencedRelation: "forklift_units"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "forklift_question_assignments_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "forklift_checklist_questions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       forklift_units: {
         Row: {
@@ -4966,11 +5019,11 @@ export type Database = {
         Returns: undefined
       }
       log_application_usage:
+        | { Args: { action: string; app_id: string }; Returns: undefined }
         | {
             Args: { action: string; app_id: string; session_id?: string }
             Returns: string
           }
-        | { Args: { action: string; app_id: string }; Returns: undefined }
       match_documents: {
         Args: {
           match_count: number
