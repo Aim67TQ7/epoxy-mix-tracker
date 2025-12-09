@@ -6,6 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { AlertTriangle, CheckCircle, Send, RotateCcw, History } from "lucide-react";
 import { HistoryModal } from "@/components/HistoryModal";
 import logo from "@/assets/logo.png";
+import epoxyIcon from "@/assets/epoxy-icon.png";
 
 type CheckType = "startup" | "daily" | "shutdown" | "ratio" | null;
 
@@ -188,9 +189,10 @@ const Index = () => {
         {/* Header */}
         <div className="border-l-4 border-amber-500 bg-zinc-800 p-4 flex items-center gap-4">
           <img src={logo} alt="Logo" className="h-12 w-12 object-contain" />
-          <h1 className="text-2xl font-bold uppercase tracking-wider text-amber-500">
+          <h1 className="text-2xl font-bold uppercase tracking-wider text-amber-500 flex-1">
             Epoxy Mix Log
           </h1>
+          <img src={epoxyIcon} alt="Epoxy Icon" className="h-12 w-12 object-contain" />
         </div>
 
         {/* Employee ID - Required */}
