@@ -5,26 +5,26 @@
 **Status:** In Transition
 
 ## What This Was
-Standalone app or experiment
+Epoxy Mix Tracker — chemical mixing ratio tracker
 
 ## Current State
-Deprecated — function should be handled by agent. Last pushed 2025-12-28.
+Function replaceable by agent — last pushed 2025-12-28
 
 ## Agent Replacement
 **Agent Name:** PENDING
-**Lives On:** Maggie or Pete VPS (TBD)
-**Orchestrator:** HOWL task or n8n workflow
-**Endpoint or Trigger:** N/A
+**Lives On:** Maggie or Pete VPS (to be determined during build)
+**Orchestrator:** ORC `compliance` skill + SDS database
+**Endpoint or Trigger:** PENDING
 **Supabase Table:** N/A
 
 ## Handoff Notes
-This repo's core function was: General purpose / unclear. The recommended replacement pattern is: HOWL task or n8n workflow. Check ORC skill list at https://orc.gp3.app/skills before building anything new.
+Core function: Log and validate epoxy mixing ratios for manufacturing. Recommended replacement: ORC `compliance` skill + SDS database. Verify at https://orc.gp3.app/skills before building anything new.
 
 ## Dependencies
-- None identified from README
+- None identified — check package.json for specifics
 
 ## Last Known Working State
 2025-12-28
 
 ## Claude's Notes
-- Agent replacement not yet built. This is a backlog item.
+- Agent replacement not yet built. This is a backlog item for the GP3 platform team.
